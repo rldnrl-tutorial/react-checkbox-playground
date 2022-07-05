@@ -1,46 +1,167 @@
-# Getting Started with Create React App
+# React Select
+## Motivation
+- 약관 페이지는 변경될 가능성이 있으니, 로직을 따로 분리해보자.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## `useState` 대신 `useReducer`를 사용한 이유
+- 업데이트 로직을 분리하는 것이 로직을 이해하는 데 더 좋을 것으로 생각
+- 약관이 추가되거나 삭제가되는 경우, `initialState`, `State`를 활용해 관리할 수 있음.
+- 업데이트 로직을 분리해서 테스트하기 쉬움.
 
-## Available Scripts
+## 코드 설명
 
-In the project directory, you can run:
+```ts
+type TermValue =
+  | "isMoreThan14"
+  | "termOfService"
+  | "privacy"
+  | "privacyThirdParty"
+  | "marketing";
+```
 
-### `yarn start`
+- `TermValue` 타입은 약관을 나타내는 타입
+- `input`의 `name`에 들어감.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```ts
+type Term = {
+  value: TermValue;
+  checked: boolean;
+  required: boolean;
+};
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- `Term`은 하나의 약관이 갖고 있는 정보
+  - `value`: 약관을 구별해주는 역할
+  - `checked`: 체크가 되어있는지 여부
+  - `required`: 필수 여부
 
-### `yarn test`
+```ts
+type Action =
+  | {
+      type: "allAgreements";
+      payload: boolean;
+    }
+  | {
+      type: "isMoreThan14";
+      payload: boolean;
+    }
+  | {
+      type: "termOfService";
+      payload: boolean;
+    }
+  | {
+      type: "privacy";
+      payload: boolean;
+    }
+  | {
+      type: "privacyThirdParty";
+      payload: boolean;
+    }
+  | {
+      type: "marketing";
+      payload: boolean;
+    }
+  | {
+      type: "reset";
+    };
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- `Action`은 `TermValue`에 있는 것 외에 `allAgreements`와 `reset`이 있는데, 이것은 **전체 선택**과 **값을 초기화**하는 요구사항이 있기 때문.
 
-### `yarn build`
+```ts
+type State = Term[];
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- `State` 타입은 `initialState`를 정의하는 역할
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```ts
+const initialState: State = [
+  {
+    value: "isMoreThan14",
+    checked: false,
+    required: true,
+  },
+  {
+    value: "termOfService",
+    checked: false,
+    required: true,
+  },
+  {
+    value: "privacy",
+    checked: false,
+    required: true,
+  },
+  {
+    value: "privacyThirdParty",
+    checked: false,
+    required: false,
+  },
+  {
+    value: "marketing",
+    checked: false,
+    required: false,
+  },
+];
+```
 
-### `yarn eject`
+- `reducer`에 넣을 초기값
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```ts
+const reducer = (state: State, action: Action) => {
+  switch (action.type) {
+    case "allAgreements":
+      return state.map((agreement) => ({
+        ...agreement,
+        checked: action.payload,
+      }));
+    case "reset":
+      return state.map((agreement) => ({ ...agreement, checked: false }));
+    default:
+      return state.map((agreement) =>
+        agreement.value === action.type
+          ? { ...agreement, checked: action.payload }
+          : agreement
+      );
+  }
+};
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- `action.type` is
+  - `allAgreements`: 모든 필드를 `action.payload`로 만들어준다.
+  - `reset`: 모든 필드를 `false`로 만들어준다.
+  - 기본적으로 `action.type`과 같은 필드를 찾아서 `action.payload`로 업데이트 해준다.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```ts
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+const useTerms = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-## Learn More
+  const onTermChange = (name: Action["type"], checked: boolean) =>
+    dispatch({ type: name, payload: checked });
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+  const allAgreements =
+    state.filter((agreemenet) => !agreemenet.checked).length < 1;
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  const validateRequired = (terms: State) =>
+    terms
+      .filter((agreement) => agreement.required)
+      .every((agreement) => agreement.checked);
+
+  const reset = () => dispatch({ type: "reset" });
+
+  return {
+    agreements: state,
+    allAgreements,
+    onTermChange,
+    validateRequired,
+    reset,
+  };
+};
+```
+
+- `onTermChange`: `dispatch`를 이름만 바꿨다고 보면 됨
+- `allAgreements`: 전체 선택에 관한 로직
+  - 하나씩 눌러서 필드 전체의 `checked`가 `true`이면 체크가 된다.
+  - 필드 전체의 `checked`가 `true`인 상태에서 하나라도 `false`가 되면 체크가 해제된다.
+- `validateRequired`: `required`가 `true`인 필드는 전부 체크가 되어야한다.(`checked: true`)
+- `reset`: 모든 필드의 `checked`를 초기화 시킨다.
