@@ -9,6 +9,8 @@
 
 ## 코드 설명
 
+### `TermValue`
+
 ```ts
 type TermValue =
   | "isMoreThan14"
@@ -20,6 +22,8 @@ type TermValue =
 
 - `TermValue` 타입은 약관을 나타내는 타입
 - `input`의 `name`에 들어감.
+
+### `Term`
 
 ```ts
 type Term = {
@@ -33,6 +37,8 @@ type Term = {
   - `value`: 약관을 구별해주는 역할
   - `checked`: 체크가 되어있는지 여부
   - `required`: 필수 여부
+
+### `Action`
 
 ```ts
 type Action =
@@ -67,14 +73,11 @@ type Action =
 
 - `Action`은 `TermValue`에 있는 것 외에 `allAgreements`와 `reset`이 있는데, 이것은 **전체 선택**과 **값을 초기화**하는 요구사항이 있기 때문.
 
+### `State`
+
 ```ts
 type State = Term[];
-```
 
-- `State` 타입은 `initialState`를 정의하는 역할
-
-
-```ts
 const initialState: State = [
   {
     value: "isMoreThan14",
@@ -103,8 +106,10 @@ const initialState: State = [
   },
 ];
 ```
+- `State` 타입은 `initialState`를 정의하는 역할
+- `initialState`는 `reducer`에 넣을 초기값
 
-- `reducer`에 넣을 초기값
+### `reducer`
 
 ```ts
 const reducer = (state: State, action: Action) => {
@@ -131,8 +136,9 @@ const reducer = (state: State, action: Action) => {
   - `reset`: 모든 필드를 `false`로 만들어준다.
   - 기본적으로 `action.type`과 같은 필드를 찾아서 `action.payload`로 업데이트 해준다.
 
-```ts
+### `useTerms`
 
+```ts
 const useTerms = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
