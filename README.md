@@ -1,4 +1,4 @@
-# React Select
+# React Checkbox
 ## Motivation
 - 약관 페이지는 변경될 가능성이 있으니, 로직을 따로 분리해보자.
 
