@@ -8,12 +8,11 @@ export const TermIndex = {
   MARKETING: 4,
 } as const;
 
-export type TermValue =
-  | "isMoreThan14"
-  | "termOfService"
-  | "privacy"
-  | "privacyThirdParty"
-  | "marketing";
+type RequiredTerms = "isMoreThan14" | "termOfService" | "privacy";
+
+type OptionalTerms =  "privacyThirdParty" | "marketing";
+
+export type TermValue = RequiredTerms | OptionalTerms
 
 export type Term = {
   value: TermValue;
