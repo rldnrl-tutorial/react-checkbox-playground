@@ -1,7 +1,7 @@
 import React from "react";
 import { useImmer } from "use-immer";
 
-import useTerm, { Action, TermIndex } from "../hooks/useTerms";
+import useTerms, { Action, TermIndex } from "../hooks/useTerms";
 
 export default function Terms() {
   const {
@@ -13,7 +13,7 @@ export default function Terms() {
   } = TermIndex;
 
   const { agreements, allAgreements, onTermChange, validateRequired, reset } =
-    useTerm();
+    useTerms();
 
   const [state, setState] = useImmer({
     errorMessageOfTerms: "",
