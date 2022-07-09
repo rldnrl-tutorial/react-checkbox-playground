@@ -10,9 +10,9 @@ export const TermIndex = {
 
 type RequiredTerms = "isMoreThan14" | "termOfService" | "privacy";
 
-type OptionalTerms =  "privacyThirdParty" | "marketing";
+type OptionalTerms = "privacyThirdParty" | "marketing";
 
-export type TermValue = RequiredTerms | OptionalTerms
+export type TermValue = RequiredTerms | OptionalTerms;
 
 export type Term = {
   value: TermValue;
@@ -22,27 +22,11 @@ export type Term = {
 
 export type Action =
   | {
+      type: TermValue;
+      payload: boolean;
+    }
+  | {
       type: "allAgreements";
-      payload: boolean;
-    }
-  | {
-      type: "isMoreThan14";
-      payload: boolean;
-    }
-  | {
-      type: "termOfService";
-      payload: boolean;
-    }
-  | {
-      type: "privacy";
-      payload: boolean;
-    }
-  | {
-      type: "privacyThirdParty";
-      payload: boolean;
-    }
-  | {
-      type: "marketing";
       payload: boolean;
     }
   | {
