@@ -41,7 +41,7 @@ export default function Terms() {
 
   return (
     <div className="App">
-      <h1>React Select</h1>
+      <h1>React Checkbox with Array Datastructure</h1>
       <ul>
         <li>
           <input
