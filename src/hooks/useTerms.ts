@@ -63,21 +63,40 @@ const initialState: State = [
   },
 ];
 
+const updateAllAgreements = (state: State, payload: boolean) =>
+  state.map((agreement) => ({
+    ...agreement,
+    checked: payload,
+  }));
+
+const updateReset = (state: State) =>
+  state.map((agreement) => ({ ...agreement, checked: false }));
+
+type UpdateByTermParams = {
+  state: State;
+  type: TermValue;
+  payload: boolean;
+};
+
+type UpdateByTermValue = (params: UpdateByTermParams) => State;
+
+const updateByTermValue: UpdateByTermValue = ({ state, type, payload }) =>
+  state.map((agreement) =>
+    agreement.value === type ? { ...agreement, checked: payload } : agreement
+  );
+
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
     case "allAgreements":
-      return state.map((agreement) => ({
-        ...agreement,
-        checked: action.payload,
-      }));
+      return updateAllAgreements(state, action.payload);
     case "reset":
-      return state.map((agreement) => ({ ...agreement, checked: false }));
+      return updateReset(state);
     default:
-      return state.map((agreement) =>
-        agreement.value === action.type
-          ? { ...agreement, checked: action.payload }
-          : agreement
-      );
+      return updateByTermValue({
+        state,
+        type: action.type,
+        payload: action.payload,
+      });
   }
 };
 
