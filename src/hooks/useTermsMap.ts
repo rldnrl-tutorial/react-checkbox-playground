@@ -84,7 +84,7 @@ const checkAllAgreements = (state: State) => {
   return Array.from(state.values()).every((checked) => checked);
 };
 
-const useTermsWithObject = () => {
+const useTermsMap = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const onTermChange = (name: Action["type"], checked: boolean) =>
@@ -102,4 +102,4 @@ const useTermsWithObject = () => {
   };
 };
 
-export default useTermsWithObject;
+export default useTermsMap;

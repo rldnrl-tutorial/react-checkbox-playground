@@ -1,10 +1,7 @@
 import React from "react";
 import { useImmer } from "use-immer";
 
-import useTermsWithObject, {
-  Action,
-  TermValue,
-} from "../hooks/useTermsWithMap";
+import useTermsMap, { Action, TermValue } from "../hooks/useTermsMap";
 
 type TermInput = {
   name: TermValue;
@@ -14,8 +11,7 @@ type TermInput = {
 };
 
 export default function TermsWithMap() {
-  const { agreements, isAllChecked, onTermChange, reset } =
-    useTermsWithObject();
+  const { agreements, isAllChecked, onTermChange, reset } = useTermsMap();
 
   const termInputs: TermInput[] = [
     {

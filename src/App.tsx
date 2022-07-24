@@ -1,6 +1,6 @@
 import { Link, Route, Routes } from "react-router-dom";
 import Terms from "./components/Terms";
-import TermsWithMap from "./components/TermsWithMap";
+import TermsWithMap from "./components/TermsMap";
 
 export default function App() {
   return (
