@@ -8,7 +8,7 @@ import AgreementsContext, {
 
 type AgreementsProps = {
   children?: ReactNode;
-  name?: string;
+  name?: TermValue;
 };
 
 export default function Agreements({ children, name }: AgreementsProps) {
