@@ -1,4 +1,4 @@
-import { createContext, Dispatch, useContext } from "react";
+import { createContext, Dispatch, SetStateAction, useContext } from "react";
 
 type RequiredTerms = "isMoreThan14" | "termOfService" | "privacy";
 
@@ -31,7 +31,8 @@ export type AgreementsContextType = {
   agreements: {
     [K in TermValue]: boolean;
   };
-  validateRequired: boolean;
+  requiredField: Set<TermValue>;
+  setRequiredField: Dispatch<SetStateAction<Set<TermValue>>>;
   isAllChecked: () => boolean;
   changeTermCheck: Dispatch<AgreementsAction>;
   reset: () => void;
@@ -47,7 +48,8 @@ export const initialAgreements: AgreementsState = {
 
 const AgreementsContext = createContext<AgreementsContextType>({
   agreements: initialAgreements,
-  validateRequired: false,
+  requiredField: new Set(),
+  setRequiredField: () => {},
   isAllChecked: () => false,
   changeTermCheck: () => {},
   reset: () => {},
