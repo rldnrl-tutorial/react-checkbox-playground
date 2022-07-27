@@ -99,6 +99,14 @@ const AgreementsContext = createContext<AgreementsContextType>({
   reset: () => {},
 });
 
-export const useAgreementsContext = () => useContext(AgreementsContext);
+export const useAgreementsContext = () => {
+  const context = useContext(AgreementsContext);
+  if (!context) {
+    throw new Error(
+      "This component must be used within a <Agreements> component."
+    );
+  }
+  return context;
+};
 
 export default AgreementsContext;
