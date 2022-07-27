@@ -1,6 +1,8 @@
-import { ReactNode, useState } from "react";
+import { ChangeEvent, ReactNode, useCallback, useState } from "react";
 import { useImmerReducer } from "use-immer";
+
 import AgreementsContext, {
+  AgreementsAction,
   agreementsReducer,
   initialAgreements,
   TermValue,
@@ -8,12 +10,11 @@ import AgreementsContext, {
 
 type AgreementsProps = {
   children?: ReactNode;
-  name?: TermValue;
 };
 
-export default function Agreements({ children, name }: AgreementsProps) {
+export default function Agreements({ children }: AgreementsProps) {
   const [requiredField, setRequiredField] = useState<Set<TermValue>>(
-    new Set<TermValue>(["isMoreThan14", "termOfService", "privacy"])
+    new Set<TermValue>()
   );
 
   const [state, dispatch] = useImmerReducer(
@@ -21,7 +22,16 @@ export default function Agreements({ children, name }: AgreementsProps) {
     initialAgreements
   );
 
-  const isAllChecked = () => {
+  const changeTermCheck = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      dispatch({
+        type: e.target.name as AgreementsAction["type"],
+        payload: e.target.checked,
+      }),
+    [dispatch]
+  );
+
+  const isAllChecked = useCallback(() => {
     let key: TermValue;
     for (key in state) {
       if (!state[key]) {
@@ -29,9 +39,9 @@ export default function Agreements({ children, name }: AgreementsProps) {
       }
     }
     return true;
-  };
+  }, [state]);
 
-  const reset = () => dispatch({ type: "reset" });
+  const reset = useCallback(() => dispatch({ type: "reset" }), [dispatch]);
 
   return (
     <AgreementsContext.Provider
@@ -40,7 +50,7 @@ export default function Agreements({ children, name }: AgreementsProps) {
         requiredField,
         setRequiredField,
         isAllChecked,
-        changeTermCheck: dispatch,
+        changeTermCheck,
         reset,
       }}
     >
