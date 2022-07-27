@@ -1,4 +1,10 @@
-import { createContext, Dispatch, SetStateAction, useContext } from "react";
+import {
+  ChangeEvent,
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+} from "react";
 
 type RequiredTerms = "isMoreThan14" | "termOfService" | "privacy";
 
@@ -14,7 +20,7 @@ export type AgreementsState = {
   marketing: boolean;
 };
 
-type AgreementsAction =
+export type AgreementsAction =
   | {
       type: TermValue;
       payload: boolean;
@@ -27,17 +33,6 @@ type AgreementsAction =
       type: "reset";
     };
 
-export type AgreementsContextType = {
-  agreements: {
-    [K in TermValue]: boolean;
-  };
-  requiredField: Set<TermValue>;
-  setRequiredField: Dispatch<SetStateAction<Set<TermValue>>>;
-  isAllChecked: () => boolean;
-  changeTermCheck: Dispatch<AgreementsAction>;
-  reset: () => void;
-};
-
 export const initialAgreements: AgreementsState = {
   isMoreThan14: false,
   privacy: false,
@@ -45,15 +40,6 @@ export const initialAgreements: AgreementsState = {
   privacyThirdParty: false,
   marketing: false,
 };
-
-const AgreementsContext = createContext<AgreementsContextType>({
-  agreements: initialAgreements,
-  requiredField: new Set(),
-  setRequiredField: () => {},
-  isAllChecked: () => false,
-  changeTermCheck: () => {},
-  reset: () => {},
-});
 
 const updateAllAgreements = (draft: AgreementsState, payload: boolean) => {
   let key: TermValue;
@@ -89,6 +75,29 @@ export const agreementsReducer = (
       break;
   }
 };
+
+export type AgreementsContextType = {
+  agreements: {
+    [K in TermValue]: boolean;
+  };
+  requiredField: Set<TermValue>;
+  setRequiredField: Dispatch<SetStateAction<Set<TermValue>>>;
+  isAllChecked: () => boolean;
+  changeTermCheck: (
+    e: ChangeEvent<HTMLInputElement>,
+    required?: boolean
+  ) => void;
+  reset: () => void;
+};
+
+const AgreementsContext = createContext<AgreementsContextType>({
+  agreements: initialAgreements,
+  requiredField: new Set(),
+  setRequiredField: () => {},
+  isAllChecked: () => false,
+  changeTermCheck: () => {},
+  reset: () => {},
+});
 
 export const useAgreementsContext = () => useContext(AgreementsContext);
 
