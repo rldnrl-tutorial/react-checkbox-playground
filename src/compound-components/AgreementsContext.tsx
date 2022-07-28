@@ -78,19 +78,47 @@ export const agreementsReducer = (
 };
 
 export type AgreementsContextType = {
+  /**
+   * 동의 여부
+   */
   agreements: {
     [K in TermValue]: boolean;
   };
+  /**
+   * 필수 값을 캐싱
+   */
   cachedRequiredField: MutableRefObject<Set<TermValue>>;
+  /**
+   * 필수값을 `Set`으로 저장
+   */
   requiredField: Set<TermValue>;
+  /**
+   * 필수값을 변경하는 함수
+   */
   setRequiredField: Dispatch<SetStateAction<Set<TermValue>>>;
+  /**
+   * 전부 체크가 되었는지 확인하는 함수
+   */
   isAllChecked: () => boolean;
+  /**
+   * 초기 마운트 시점에서 `required`가 설정된 `input`의 `name`을 
+   * cachedRequiredField, requiredField에 세팅.
+   */
   initializeRequiredField: (name: TermValue, required?: boolean) => void;
+  /**
+   * 체크가 변화할 때마다 실행하는 함수
+   */
   changeTermCheck: (
     e: ChangeEvent<HTMLInputElement>,
     required?: boolean
   ) => void;
+  /**
+   * 에러 메시지를 보여줄 때 사용하는 조건
+   */
   isCheckedAllRequiredField: boolean;
+  /**
+   * 전부 초기화 하는 함수
+   */
   reset: () => void;
 };
 
