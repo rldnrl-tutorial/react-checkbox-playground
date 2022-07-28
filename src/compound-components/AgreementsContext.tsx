@@ -2,6 +2,7 @@ import {
   ChangeEvent,
   createContext,
   Dispatch,
+  MutableRefObject,
   SetStateAction,
   useContext,
 } from "react";
@@ -80,22 +81,30 @@ export type AgreementsContextType = {
   agreements: {
     [K in TermValue]: boolean;
   };
+  cachedRequiredField: MutableRefObject<Set<TermValue>>;
   requiredField: Set<TermValue>;
   setRequiredField: Dispatch<SetStateAction<Set<TermValue>>>;
   isAllChecked: () => boolean;
+  initializeRequiredField: (name: TermValue, required?: boolean) => void;
   changeTermCheck: (
     e: ChangeEvent<HTMLInputElement>,
     required?: boolean
   ) => void;
+  isCheckedAllRequiredField: boolean;
   reset: () => void;
 };
 
 const AgreementsContext = createContext<AgreementsContextType>({
   agreements: initialAgreements,
+  cachedRequiredField: {
+    current: new Set(),
+  },
   requiredField: new Set(),
   setRequiredField: () => {},
   isAllChecked: () => false,
+  initializeRequiredField: () => {},
   changeTermCheck: () => {},
+  isCheckedAllRequiredField: false,
   reset: () => {},
 });
 
