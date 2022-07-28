@@ -101,8 +101,8 @@ export type AgreementsContextType = {
    */
   isAllChecked: () => boolean;
   /**
-   * 초기 마운트 시점에서 `required`가 설정된 `input`의 `name`을 
-   * cachedRequiredField, requiredField에 세팅.
+   * 초기 마운트 시점에서 `required`가 설정된 `input`의 `name`을
+   * `cachedRequiredField`, `requiredField`에 세팅.
    */
   initializeRequiredField: (name: TermValue, required?: boolean) => void;
   /**
