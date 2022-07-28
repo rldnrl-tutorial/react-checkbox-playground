@@ -18,8 +18,8 @@ export default function AgreementCheckbox(props: AgreementCheckboxProps) {
 
   useMountEffect(() => {
     if (props.required) {
-      setRequiredField((prevSet) => {
-        const newSet = new Set<TermValue>(prevSet);
+      setRequiredField((prevRequiredField) => {
+        const newSet = new Set<TermValue>(prevRequiredField);
         newSet.add(props.name as TermValue);
         return newSet;
       });
