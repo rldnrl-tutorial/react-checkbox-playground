@@ -1,6 +1,15 @@
 # React Checkbox
 ## Motivation
+- 기존 코드가 하드 코딩되어 있어서 로직을 바꿔보자.
 - 약관 페이지는 변경될 가능성이 있으니, 로직을 따로 분리해보자.
+
+## 기존 코드
+```tsx
+const [agreements, setAgreements] = useState([false, false, false, false, false])
+```
+
+- 업데이트하는 로직도 하드코딩 되어있었다.
+- 에러 로직 처리하는 부분이 아주 이상하게 조건이 많았다.
 
 ## `useState` 대신 `useReducer`를 사용한 이유
 - 업데이트 로직을 분리하는 것이 로직을 이해하는 데 더 좋을 것으로 생각
