@@ -13,17 +13,11 @@ type AgreementCheckboxProps = Omit<
 };
 
 export default function AgreementCheckbox(props: AgreementCheckboxProps) {
-  const { agreements, isAllChecked, setRequiredField, changeTermCheck } =
+  const { agreements, isAllChecked, initializeRequiredField, changeTermCheck } =
     useAgreementsContext();
 
   useMountEffect(() => {
-    if (props.required) {
-      setRequiredField((prevRequiredField) => {
-        const newSet = new Set<TermValue>(prevRequiredField);
-        newSet.add(props.name as TermValue);
-        return newSet;
-      });
-    }
+    initializeRequiredField(props.name as TermValue, props.required);
   });
 
   const checked = useMemo(() => {
