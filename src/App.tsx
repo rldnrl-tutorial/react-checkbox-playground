@@ -2,6 +2,7 @@ import { Link, Route, Routes } from "react-router-dom";
 import Terms from "./components/Terms";
 import TermsWithMap from "./components/TermsMap";
 import AgreementCheckbox from "./compound-components/AgreementCheckbox";
+import AgreementHelpMessage from "./compound-components/AgreementHelpMessage";
 import Agreements from "./compound-components/Agreements";
 
 export default function App() {
@@ -60,6 +61,7 @@ export default function App() {
               >
                 마케팅
               </AgreementCheckbox>
+              <AgreementHelpMessage message="필수값을 입력해주세요." />
             </Agreements>
           }
         ></Route>
