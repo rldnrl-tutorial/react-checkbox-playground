@@ -12,6 +12,7 @@ import AgreementsContext, {
   AgreementsAction,
   agreementsReducer,
   initialAgreements,
+  RequiredTerms,
   TermValue,
 } from "./AgreementsContext";
 
@@ -41,40 +42,53 @@ export default function Agreements({ children }: AgreementsProps) {
     initialAgreements
   );
 
+  const checkRequiredField = (agreementName: RequiredTerms) => {
+    setRequiredField((prevRequiredField) => {
+      const newSet = new Set(prevRequiredField);
+      newSet.delete(agreementName);
+      return newSet;
+    });
+  };
+
+  const uncheckRequiredField = (agreementName: RequiredTerms) => {
+    setRequiredField((prevRequiredField) => {
+      const newSet = new Set(prevRequiredField);
+      newSet.add(agreementName);
+      return newSet;
+    });
+  };
+
+  const checkAllAgreement = () => {
+    setRequiredField((prevRequiredField) => {
+      const newSet = new Set(prevRequiredField);
+      newSet.clear();
+      return newSet;
+    });
+  };
+
   const changeTermCheck = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const agreementName = e.target.name as AgreementsAction["type"];
+      const isRequired = e.target.required;
 
-      const isCheckedRequiredField = e.target.required && e.target.checked;
-      const isUncheckedRequiredField = e.target.required && !e.target.checked;
+      const isCheckedRequiredField = isRequired && e.target.checked;
+      const isUncheckedRequiredField = isRequired && !e.target.checked;
 
       if (isCheckedRequiredField) {
-        setRequiredField((prevRequiredField) => {
-          const newSet = new Set(prevRequiredField);
-          newSet.delete(agreementName as TermValue);
-          return newSet;
-        });
+        checkRequiredField(agreementName as RequiredTerms);
       }
 
       if (isUncheckedRequiredField) {
-        setRequiredField((prevRequiredField) => {
-          const newSet = new Set(prevRequiredField);
-          newSet.add(agreementName as TermValue);
-          return newSet;
-        });
+        uncheckRequiredField(agreementName as RequiredTerms);
       }
 
-      const isCheckedAllAgreements =
-        agreementName === "allAgreements" && e.target.checked;
-      const isUnCheckedAllAgreements =
-        agreementName === "allAgreements" && !e.target.checked;
+      const isAllAgreement = agreementName === "allAgreements";
+
+      const isCheckedAllAgreements = isAllAgreement && e.target.checked;
+      const isUnCheckedAllAgreements = isAllAgreement && !e.target.checked;
 
       if (isCheckedAllAgreements) {
-        setRequiredField((prevRequiredField) => {
-          const newSet = new Set(prevRequiredField);
-          newSet.clear();
-          return newSet;
-        });
+        checkAllAgreement();
       }
 
       if (isUnCheckedAllAgreements) {
