@@ -52,27 +52,11 @@ type Term = {
 ```ts
 type Action =
   | {
+      type: TermValue;
+      payload: boolean;
+    }
+  | {
       type: "allAgreements";
-      payload: boolean;
-    }
-  | {
-      type: "isMoreThan14";
-      payload: boolean;
-    }
-  | {
-      type: "termOfService";
-      payload: boolean;
-    }
-  | {
-      type: "privacy";
-      payload: boolean;
-    }
-  | {
-      type: "privacyThirdParty";
-      payload: boolean;
-    }
-  | {
-      type: "marketing";
       payload: boolean;
     }
   | {
