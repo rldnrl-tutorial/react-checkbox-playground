@@ -9,7 +9,6 @@ type AgreementCheckboxProps = Omit<
   htmlFor: TermValue | "allAgreements";
   id: TermValue | "allAgreements";
   name: TermValue | "allAgreements";
-  required?: boolean;
 };
 
 export default function AgreementCheckbox(props: AgreementCheckboxProps) {
