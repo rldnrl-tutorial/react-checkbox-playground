@@ -7,9 +7,9 @@ import {
   useContext,
 } from "react";
 
-type RequiredTerms = "isMoreThan14" | "termOfService" | "privacy";
+export type RequiredTerms = "isMoreThan14" | "termOfService" | "privacy";
 
-type OptionalTerms = "privacyThirdParty" | "marketing";
+export type OptionalTerms = "privacyThirdParty" | "marketing";
 
 export type TermValue = RequiredTerms | OptionalTerms;
 
