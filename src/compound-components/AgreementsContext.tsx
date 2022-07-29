@@ -14,11 +14,7 @@ type OptionalTerms = "privacyThirdParty" | "marketing";
 export type TermValue = RequiredTerms | OptionalTerms;
 
 export type AgreementsState = {
-  isMoreThan14: boolean;
-  privacy: boolean;
-  termOfService: boolean;
-  privacyThirdParty: boolean;
-  marketing: boolean;
+  [K in TermValue]: boolean;
 };
 
 export type AgreementsAction =
@@ -81,9 +77,7 @@ export type AgreementsContextType = {
   /**
    * 동의 여부
    */
-  agreements: {
-    [K in TermValue]: boolean;
-  };
+  agreements: AgreementsState;
   /**
    * 필수 값을 캐싱
    */
