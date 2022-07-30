@@ -511,6 +511,7 @@ import AgreementsContext, {
   AgreementsAction,
   agreementsReducer,
   initialAgreements,
+  RequiredTerms,
   TermValue,
 } from "./AgreementsContext";
 
@@ -540,40 +541,56 @@ export default function Agreements({ children }: AgreementsProps) {
     initialAgreements
   );
 
+  const checkRequiredField = (agreementName: RequiredTerms) => {
+    setRequiredField((prevRequiredField) => {
+      const newSet = new Set(prevRequiredField);
+      newSet.delete(agreementName);
+      return newSet;
+    });
+  };
+
+  const uncheckRequiredField = (agreementName: RequiredTerms) => {
+    setRequiredField((prevRequiredField) => {
+      const newSet = new Set(prevRequiredField);
+      newSet.add(agreementName);
+      return newSet;
+    });
+  };
+
+  const checkAllAgreement = () => {
+    setRequiredField((prevRequiredField) => {
+      const newSet = new Set(prevRequiredField);
+      newSet.clear();
+      return newSet;
+    });
+  };
+
   const changeTermCheck = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const agreementName = e.target.name as AgreementsAction["type"];
+      const {
+        name: targetName,
+        required: targetRequired,
+        checked: targetChecked,
+      } = e.target;
 
-      const isCheckedRequiredField = e.target.required && e.target.checked;
-      const isUncheckedRequiredField = e.target.required && !e.target.checked;
+      const isCheckedRequiredField = targetRequired && targetChecked;
+      const isUncheckedRequiredField = targetRequired && !targetChecked;
 
       if (isCheckedRequiredField) {
-        setRequiredField((prevRequiredField) => {
-          const newSet = new Set(prevRequiredField);
-          newSet.delete(agreementName as TermValue);
-          return newSet;
-        });
+        checkRequiredField(targetName as RequiredTerms);
       }
 
       if (isUncheckedRequiredField) {
-        setRequiredField((prevRequiredField) => {
-          const newSet = new Set(prevRequiredField);
-          newSet.add(agreementName as TermValue);
-          return newSet;
-        });
+        uncheckRequiredField(targetName as RequiredTerms);
       }
 
-      const isCheckedAllAgreements =
-        agreementName === "allAgreements" && e.target.checked;
-      const isUnCheckedAllAgreements =
-        agreementName === "allAgreements" && !e.target.checked;
+      const isAllAgreement = targetName === "allAgreements";
+
+      const isCheckedAllAgreements = isAllAgreement && targetChecked;
+      const isUnCheckedAllAgreements = isAllAgreement && !targetChecked;
 
       if (isCheckedAllAgreements) {
-        setRequiredField((prevRequiredField) => {
-          const newSet = new Set(prevRequiredField);
-          newSet.clear();
-          return newSet;
-        });
+        checkAllAgreement();
       }
 
       if (isUnCheckedAllAgreements) {
@@ -581,8 +598,8 @@ export default function Agreements({ children }: AgreementsProps) {
       }
 
       dispatch({
-        type: e.target.name as AgreementsAction["type"],
-        payload: e.target.checked,
+        type: targetName as AgreementsAction["type"],
+        payload: targetChecked,
       });
     },
     [dispatch]
@@ -670,40 +687,56 @@ const [state, dispatch] = useImmerReducer(
 `useImmerReducer`로 `state`와 `dispatch`를 가져옵니다. “이걸 왜 사용하시나요?” 라고 물어보신다면, 관리하기 편해서 사용합니다. 한 번 살펴보세요.([https://immerjs.github.io/immer/example-setstate/](https://immerjs.github.io/immer/example-setstate/))
 
 ```tsx
+const checkRequiredField = (agreementName: RequiredTerms) => {
+  setRequiredField((prevRequiredField) => {
+    const newSet = new Set(prevRequiredField);
+    newSet.delete(agreementName);
+    return newSet;
+  });
+};
+
+const uncheckRequiredField = (agreementName: RequiredTerms) => {
+  setRequiredField((prevRequiredField) => {
+    const newSet = new Set(prevRequiredField);
+    newSet.add(agreementName);
+    return newSet;
+  });
+};
+
+const checkAllAgreement = () => {
+  setRequiredField((prevRequiredField) => {
+    const newSet = new Set(prevRequiredField);
+    newSet.clear();
+    return newSet;
+  });
+};
+
 const changeTermCheck = useCallback(
   (e: ChangeEvent<HTMLInputElement>) => {
-    const agreementName = e.target.name as AgreementsAction["type"];
+    const {
+      name: targetName,
+      required: targetRequired,
+      checked: targetChecked,
+    } = e.target;
 
-    const isCheckedRequiredField = e.target.required && e.target.checked;
-    const isUncheckedRequiredField = e.target.required && !e.target.checked;
+    const isCheckedRequiredField = targetRequired && targetChecked;
+    const isUncheckedRequiredField = targetRequired && !targetChecked;
 
     if (isCheckedRequiredField) {
-      setRequiredField((prevRequiredField) => {
-        const newSet = new Set(prevRequiredField);
-        newSet.delete(agreementName as TermValue);
-        return newSet;
-      });
+      checkRequiredField(targetName as RequiredTerms);
     }
 
     if (isUncheckedRequiredField) {
-      setRequiredField((prevRequiredField) => {
-        const newSet = new Set(prevRequiredField);
-        newSet.add(agreementName as TermValue);
-        return newSet;
-      });
+      uncheckRequiredField(targetName as RequiredTerms);
     }
 
-    const isCheckedAllAgreements =
-      agreementName === "allAgreements" && e.target.checked;
-    const isUnCheckedAllAgreements =
-      agreementName === "allAgreements" && !e.target.checked;
+    const isAllAgreement = targetName === "allAgreements";
+
+    const isCheckedAllAgreements = isAllAgreement && targetChecked;
+    const isUnCheckedAllAgreements = isAllAgreement && !targetChecked;
 
     if (isCheckedAllAgreements) {
-      setRequiredField((prevRequiredField) => {
-        const newSet = new Set(prevRequiredField);
-        newSet.clear();
-        return newSet;
-      });
+      checkAllAgreement();
     }
 
     if (isUnCheckedAllAgreements) {
@@ -711,8 +744,8 @@ const changeTermCheck = useCallback(
     }
 
     dispatch({
-      type: e.target.name as AgreementsAction["type"],
-      payload: e.target.checked,
+      type: targetName as AgreementsAction["type"],
+      payload: targetChecked,
     });
   },
   [dispatch]
@@ -722,12 +755,48 @@ const changeTermCheck = useCallback(
 상당히 복잡해보이는데요, 한 번 하나씩 까봅시다.
 
 ```tsx
-const isCheckedRequiredField = e.target.required && e.target.checked;
+const checkRequiredField = (agreementName: RequiredTerms) => {
+  setRequiredField((prevRequiredField) => {
+    const newSet = new Set(prevRequiredField);
+    newSet.delete(agreementName);
+    return newSet;
+  });
+};
+```
+
+`required` 필드를 선택했을 때 `Set`에서 삭제하는 역할을 하는 함수 입니다.
+
+```tsx
+const uncheckRequiredField = (agreementName: RequiredTerms) => {
+  setRequiredField((prevRequiredField) => {
+    const newSet = new Set(prevRequiredField);
+    newSet.add(agreementName);
+    return newSet;
+  });
+};
+```
+
+`required` 필드를 선택 해제했을 때 `Set`에서 추가하는 역할을 하는 함수 입니다.
+
+```tsx
+const checkAllAgreement = () => {
+  setRequiredField((prevRequiredField) => {
+    const newSet = new Set(prevRequiredField);
+    newSet.clear();
+    return newSet;
+  });
+};
+```
+
+전체 선택을 했을 때, `Set`을 아예 비워주는 역할을 합니다.
+
+```tsx
+const isCheckedRequiredField = targetRequired && targetChecked;
 
 if (isCheckedRequiredField) {
   setRequiredField((prevRequiredField) => {
     const newSet = new Set(prevRequiredField);
-    newSet.delete(agreementName as TermValue);
+    newSet.delete(targetName as TermValue);
     return newSet;
   });
 }
@@ -736,12 +805,12 @@ if (isCheckedRequiredField) {
 필수값이면서 체크된 값을 `Set`에서 삭제하는 역할을 합니다.
 
 ```tsx
-const isUncheckedRequiredField = e.target.required && !e.target.checked;
+const isUncheckedRequiredField = targetRequired && !targetChecked;
 
 if (isUncheckedRequiredField) {
   setRequiredField((prevRequiredField) => {
     const newSet = new Set(prevRequiredField);
-    newSet.add(agreementName as TermValue);
+    newSet.add(targetName as TermValue);
     return newSet;
   });
 }
@@ -751,7 +820,7 @@ if (isUncheckedRequiredField) {
 
 ```tsx
 const isCheckedAllAgreements =
-  agreementName === "allAgreements" && e.target.checked;
+  targetName === "allAgreements" && targetChecked;
 
 if (isCheckedAllAgreements) {
   setRequiredField((prevRequiredField) => {
@@ -766,7 +835,7 @@ if (isCheckedAllAgreements) {
 
 ```tsx
 const isUnCheckedAllAgreements =
-  agreementName === "allAgreements" && !e.target.checked;
+  targetName === "allAgreements" && !targetChecked;
 
 if (isUnCheckedAllAgreements) {
   setRequiredField(cachedRequiredField.current);
@@ -777,8 +846,8 @@ if (isUnCheckedAllAgreements) {
 
 ```tsx
 dispatch({
-  type: e.target.name as AgreementsAction["type"],
-  payload: e.target.checked,
+  type: targetName as AgreementsAction["type"],
+  payload: targetChecked,
 });
 ```
 
@@ -908,7 +977,7 @@ useMountEffect(() => {
 });
 ```
 
-마운트될 때, `name`과 `required`를 불러와 `requiredField`에 채워줍니다.
+마운트될 때, `name`과 `required`를 불러와 `requiredField`와 `cachedRequiredField`에 채워줍니다.
 
 ```tsx
 const checked = useMemo(() => {
@@ -961,3 +1030,62 @@ export default function AgreementHelpMessage({
 ```
 
 `isCheckedAllRequiredField`로 `message`를 보여줍니다.
+
+### `App.tsx`
+
+```tsx
+export default function App() {
+  return (
+    <Agreements>
+      <AgreementCheckbox
+        htmlFor="allAgreements"
+        id="allAgreements"
+        name="allAgreements"
+      >
+        전체 선택
+      </AgreementCheckbox>
+      <AgreementCheckbox
+        htmlFor="isMoreThan14"
+        id="isMoreThan14"
+        name="isMoreThan14"
+        required
+      >
+        14세 이상
+      </AgreementCheckbox>
+      <AgreementCheckbox
+        htmlFor="termOfService"
+        id="termOfService"
+        name="termOfService"
+        required
+      >
+        이용 약관 동의
+      </AgreementCheckbox>
+      <AgreementCheckbox
+        htmlFor="privacy"
+        id="privacy"
+        name="privacy"
+        required
+      >
+        개인정보 제공 동의
+      </AgreementCheckbox>
+      <AgreementCheckbox
+        htmlFor="privacyThirdParty"
+        id="privacyThirdParty"
+        name="privacyThirdParty"
+      >
+        제 3자 개인정보 제공 동의
+      </AgreementCheckbox>
+      <AgreementCheckbox
+        htmlFor="marketing"
+        id="marketing"
+        name="marketing"
+      >
+        마케팅
+      </AgreementCheckbox>
+      <AgreementHelpMessage message="필수값을 입력해주세요." />
+    </Agreements>
+  )
+}
+```
+
+실제 사용하는 쪽을 보면 위와 같습니다. 여기서 주목할 점은 사용하는 쪽에는 State와 로직이 하나도 없다는 사실 입니다. 그것은 `Agreements` 컴포넌트 내부에서 State와 관련된 로직이 상호작용하고 있기 때문이죠. 인터페이스 혹은 로직이 변경된다면, `AgreementsContext`와 `Agreements` 파일을 변경해주면 됩니다.
