@@ -68,24 +68,27 @@ export default function Agreements({ children }: AgreementsProps) {
 
   const changeTermCheck = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const agreementName = e.target.name as AgreementsAction["type"];
-      const isRequired = e.target.required;
+      const {
+        name: targetName,
+        required: targetRequired,
+        checked: targetChecked,
+      } = e.target;
 
-      const isCheckedRequiredField = isRequired && e.target.checked;
-      const isUncheckedRequiredField = isRequired && !e.target.checked;
+      const isCheckedRequiredField = targetRequired && targetChecked;
+      const isUncheckedRequiredField = targetRequired && !targetChecked;
 
       if (isCheckedRequiredField) {
-        checkRequiredField(agreementName as RequiredTerms);
+        checkRequiredField(targetName as RequiredTerms);
       }
 
       if (isUncheckedRequiredField) {
-        uncheckRequiredField(agreementName as RequiredTerms);
+        uncheckRequiredField(targetName as RequiredTerms);
       }
 
-      const isAllAgreement = agreementName === "allAgreements";
+      const isAllAgreement = targetName === "allAgreements";
 
-      const isCheckedAllAgreements = isAllAgreement && e.target.checked;
-      const isUnCheckedAllAgreements = isAllAgreement && !e.target.checked;
+      const isCheckedAllAgreements = isAllAgreement && targetChecked;
+      const isUnCheckedAllAgreements = isAllAgreement && !targetChecked;
 
       if (isCheckedAllAgreements) {
         checkAllAgreement();
@@ -96,8 +99,8 @@ export default function Agreements({ children }: AgreementsProps) {
       }
 
       dispatch({
-        type: e.target.name as AgreementsAction["type"],
-        payload: e.target.checked,
+        type: targetName as AgreementsAction["type"],
+        payload: targetChecked,
       });
     },
     [dispatch]
