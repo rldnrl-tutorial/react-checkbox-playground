@@ -167,7 +167,13 @@ const useTerms = () => {
 
 ## Compound Component Pattern
 
-일단 위의 리팩토링한 것도 부족한 부분이 있습니다. `required`를 UI 단에서 관리하는 게 아니라 `state`에서 관리를 해준다는 점입니다. 요구사항이 바뀔 때마다 그 쪽을 추가해줘야합니다. 그래서 UI에서 `required`라는 `Props`를 추가만 하면 자동으로 추가되는 방향으로 작업을 생각했습니다. 이전에 배웠던 compound component pattern을 활용해서 말이죠.
+[일단 전에 리팩토링](https://www.rldnrl.dev/blog/%EC%A3%BD%EC%9D%80-%EC%BD%94%EB%93%9C-%EC%82%B4%EB%A6%AC%EA%B8%B01)한 것도 부족한 부분이 있습니다. 
+
+### 이전 리팩토링 문제점
+- `required`를 UI 단에서 관리하는 게 아니라 `state`에서 관리를 해준다는 점입니다. 요구사항이 바뀔 때마다 그 쪽을 추가해줘야합니다.
+- State를 배열로 관리하고 있습니다. 이 부분도 문제가 될 수 있습니다. 예를 들어서 순서가 바뀌었을 경우 배열의 순서를 변경해야합니다. 그런데 UI 쪽에서 변경하는 게 아니라, 커스텀 훅 쪽에서 변경을 해줘야합니다.
+
+그래서 UI에서 `required`라는 `Props`를 추가만 하면 자동으로 추가되는 방향으로 작업을 생각했습니다. 이전에 배웠던 compound component pattern을 활용해서 말이죠.
 
 먼저 `Agreements Context` 만들어봅시다. `Context`와 `Provider`를 따로 만드는 것을 추천합니다. `Context`는 `Interface`의 개념이라면, `Provider`는 구현체이기 때문입니다. 그렇다고 `Context`에 구현이 안 들어가는 건 아닙니다. 왜냐하면 `initialState`와 `reducer`를 준비해야하기 때문이죠.
 
